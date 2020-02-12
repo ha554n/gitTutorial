@@ -723,7 +723,17 @@ class Subject():
         end=time.process_time()
         print(str(end-start) +' s')
         
+        """
+        cars simulation
+        """
         
+        self.Cars_sim=pd.DataFrame()
+        start=time.process_time()
+        
+        for i in range(itera):
+            self.Cars_sim=self.Cars_sim.append(simulateBT_ha(self.cars,self.CarsStims,16,self.Cars_dfprobs))
+        end=time.process_time()
+        print(str(end-start) +' s')
 
         """
         faces simulation
