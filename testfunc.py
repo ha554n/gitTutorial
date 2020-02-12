@@ -11,3 +11,13 @@ def natural_keys(text):
     (See Toothy's implementation in the comments)
     '''
     return [ atoi(c) for c in re.split(r'(\d+)', text) ]
+
+def foo(n):
+    return(n*3)
+
+class bar():
+    def __init__(self,name):
+
+        self.name=name
+
+        
