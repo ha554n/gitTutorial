@@ -1,5 +1,5 @@
 def foo(n):
-    return(n*2)
+    return(n*3)
 
 class bar():
     def __init__(self,name):
