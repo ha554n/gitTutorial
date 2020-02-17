@@ -221,10 +221,10 @@ class Subject():
 
 
         def fixMissing(self):
-        """
-        below is a series of loops that look for values in the counts, and if nothing is there, set the count as zero.
-        In the case that a stimuli was never picked, its count should be 0, but pavlovia leaves cell empty, so need to do it manually
-        """
+            """
+            below is a series of loops that look for values in the counts, and if nothing is there, set the count as zero.
+            In the case that a stimuli was never picked, its count should be 0, but pavlovia leaves cell empty, so need to do it manually
+            """
             for i in self.shirtFiller.index:
                 try:#go through
                     self.temp=self.preShirtsCountsSorted.loc[i][0]
