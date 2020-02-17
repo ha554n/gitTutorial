@@ -1,3 +1,10 @@
+"""
+this file contains misc functions that may not be currently in use, but for 
+reference or future usage
+"""
+
+
+
 def equalize(countsdf):
     """
     looks where pre and post are tied (have equal # of winnings for an item)
