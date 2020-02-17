@@ -374,20 +374,20 @@ FIX: if an item never wins, return divide by zero error.
 """
 start count and BT functions
 """
-subname.Shirts_dfprobs=getPij(subname.pre_ShirtsComparisonMat_df+subname.post_ShirtsComparisonMat_df,2,16)#n and npar
-subname.Shirts_dfprobs=pd.DataFrame(subname.Shirts_dfprobs)
-subname.Shirts_dfprobs.index=subname.shirts
-subname.Shirts_dfprobs.columns=subname.shirts
+# subname.Shirts_dfprobs=getPij(subname.pre_ShirtsComparisonMat_df+subname.post_ShirtsComparisonMat_df,2,16)#n and npar
+# subname.Shirts_dfprobs=pd.DataFrame(subname.Shirts_dfprobs)
+# subname.Shirts_dfprobs.index=subname.shirts
+# subname.Shirts_dfprobs.columns=subname.shirts
 
-subname.Cars_dfprobs=getPij(subname.pre_CarsComparisonMat_df+subname.post_CarsComparisonMat_df,2,16)#n and npar
-subname.Cars_dfprobs=pd.DataFrame(subname.Cars_dfprobs)
-subname.Cars_dfprobs.index=subname.cars
-subname.Cars_dfprobs.columns=subname.cars
+# subname.Cars_dfprobs=getPij(subname.pre_CarsComparisonMat_df+subname.post_CarsComparisonMat_df,2,16)#n and npar
+# subname.Cars_dfprobs=pd.DataFrame(subname.Cars_dfprobs)
+# subname.Cars_dfprobs.index=subname.cars
+# subname.Cars_dfprobs.columns=subname.cars
 
-subname.Faces_dfprobs=getPij(subname.pre_FacesComparisonMat_df+subname.post_FacesComparisonMat_df,2,16)#n and npar
-subname.Faces_dfprobs=pd.DataFrame(subname.Faces_dfprobs)
-subname.Faces_dfprobs.index=subname.faces
-subname.Faces_dfprobs.columns=subname.faces
+# subname.Faces_dfprobs=getPij(subname.pre_FacesComparisonMat_df+subname.post_FacesComparisonMat_df,2,16)#n and npar
+# subname.Faces_dfprobs=pd.DataFrame(subname.Faces_dfprobs)
+# subname.Faces_dfprobs.index=subname.faces
+# subname.Faces_dfprobs.columns=subname.faces
 
 
     
