@@ -391,9 +391,7 @@ start count and BT functions
 
 
     
-"""
-start plotting functions
-"""
+#%% plotting functions
 def radarPlot(subname,category):
     hues=np.linspace(0,1,16,endpoint=False)
     hues=['%1.2f' % i for i in hues]
@@ -505,3 +503,252 @@ def radarPlot(subname,category):
         #bars = ax.bar(theta, radii, width=width, bottom=15, color=colors)
         ax.legend(['Pre','Post'])
         plt.title(subname.subname+' '+'Faces')
+#%% personality test scoring functions
+def getBIS(subname):
+  """
+  http://www.impulsivity.org/measurement/bis11
+  gives back a dictionary with BIS scores 
+  subname should be a subject object eg. subs['sub1']
+  """
+  subname.BIS=subname.df[['BISslider.response','BISslider.rt','Question']].dropna().reset_index(drop=True)#get rows w relevant responses
+  BISIdx=list(np.arange(1,31))#establish an index
+  missingFlag=False#in case missing questions
+  if len(subname.BIS)!=30:#if missing
+    missingFlag=True#raise flag
+    print('has ' +str(30-(len(subname.BIS)))+' missing questions')
+    #figure out what is missing, below is a list for reference
+    BISqList=['I plan tasks carefully',
+    'I do things without thinking',
+    'I make-up my mind quickly',
+    'I am happy-go-lucky',
+    'I don’t “pay attention"',
+    'I have “racing” thoughts',
+    'I plan trips well ahead of time',
+    'I am self controlled',
+    'I concentrate easily',
+    ' I save regularly',
+    'I “squirm” at plays or lectures',
+    ' I am a careful thinker.',
+    ' I plan for job security.',
+    ' I say things without thinking.',
+    ' I like to think about complex problems.',
+    ' I change jobs.',
+    ' I act “on impulse.”',
+    'I get easily bored when solving thought problems.',
+    'I act on the spur of the moment.',
+    ' I am a steady thinker.',
+    'I change residences.',
+    ' I buy things on impulse.',
+    ' I can only think about one thing at a time.',
+    ' I change hobbies.',
+    ' I spend or charge more than I earn.',
+    ' I often have extraneous thoughts when thinking.',
+    ' I am more interested in the present than the future.',
+    ' I am restless at the theater or lectures.',
+    'I like puzzles.',
+    ' I am future oriented.']
+
+    missing=list(set(BISqList)-set(subname.BIS['Question']))#what is missing from our question column
+    missingIDX=[]
+    for i in missing:
+      """
+      go through and see the original index of each of the missing questions
+      """
+      missingIDX.append(BISqList.index(i))#this index is 0 onwards!
+    missingIDX=[i+1 for i in missingIDX]#start from 1
+    print(missingIDX)
+
+  #indices for certain attributes, norm means normal scoring, rev is reversed
+  #scoring is 1-4
+  AttentionIDX=[5,6,9,11,20,24,26,28]
+  MotorIDX=[2,3,4,16,17,19,21,22,23,25,30]
+  NonPlanningIDX=[1,7,8,10,12,13,14,15,18,27,29]
+  AttentionNorm=[5,6,11,24,26,28]
+  AttentionRev=[9,20]
+  MotorNorm=[2,3,4,16,17,19,21,22,23,25]
+  MotorRev=[30]
+  NonPlanningNorm=[14,18,27]
+  NonPlanningRev=[1,7,8,10,12,13,15,29]
+
+  def removeItem(item,lst):
+    if item in lst:
+      lst.remove(item)
+  
+  if missingFlag:
+    """
+    if missing questions, then need to remove from
+    the trait indices, as well as overall index
+    """
+    [removeItem(i,AttentionIDX) for i in missingIDX]
+    [removeItem(i,MotorIDX) for i in missingIDX]
+    [removeItem(i,NonPlanningIDX) for i in missingIDX]
+    [removeItem(i,AttentionNorm) for i in missingIDX]
+    [removeItem(i,MotorNorm) for i in missingIDX]
+    [removeItem(i,NonPlanningNorm) for i in missingIDX]
+    [removeItem(i,AttentionRev) for i in missingIDX]
+    [removeItem(i,MotorRev) for i in missingIDX]
+    [removeItem(i,NonPlanningRev) for i in missingIDX]
+    [removeItem(i,BISIdx) for i in missingIDX]
+
+  
+  #need to reindex with those missing taken out
+  subname.BIS.index=BISIdx
+
+
+  #get all items associated w/ 3 categores
+  AttentionBIS=[subname.BIS.loc[i]['BISslider.response'] for i in AttentionIDX]
+  MotorBIS=[subname.BIS.loc[i]['BISslider.response']  for i in MotorIDX]
+  NonPlanningBIS=[subname.BIS.loc[i]['BISslider.response']  for i in NonPlanningIDX]
+  #get Norm items
+  AttentionNormVal=[subname.BIS.loc[i]['BISslider.response'] for i in AttentionNorm]
+  MotorNormVal=[subname.BIS.loc[i]['BISslider.response']  for i in MotorNorm]
+  NonPlanningNormVal=[subname.BIS.loc[i]['BISslider.response']  for i in NonPlanningNorm]
+  #norm scores
+  AttentionNormScore=np.sum(AttentionNormVal)
+  MotorNormScore=np.sum(MotorNormVal)
+  NonPlanningNormScore=np.sum(NonPlanningNormVal)
+  #get all items associated w/reversed
+  AttentionRevVal=[subname.BIS.loc[i]['BISslider.response'] for i in AttentionRev]
+  MotorRevVal=[subname.BIS.loc[i]['BISslider.response']  for i in MotorRev]
+  NonPlanningRevVal=[subname.BIS.loc[i]['BISslider.response']  for i in NonPlanningRev]
+  #reverse scores
+  reverseBISdict={1:4,2:3,3:2,4:1} #reversed score dict  
+  AttentionRevScore=np.sum([reverseBISdict[i] for i in AttentionRevVal])
+  MotorRevScore=np.sum([reverseBISdict[i] for i in MotorRevVal])
+  NonPlanningRevScore=np.sum([reverseBISdict[i] for i in NonPlanningRevVal])
+  #calculate category specific scores
+  AttentionBIS_SCORE=AttentionNormScore+AttentionRevScore
+  MotorBIS_SCORE=MotorNormScore+MotorRevScore
+  NonPlanningBIS_SCORE=NonPlanningNormScore+NonPlanningRevScore
+  OverallBIS_SCORE=AttentionBIS_SCORE+MotorBIS_SCORE+NonPlanningBIS_SCORE
+  #BIS dictionary
+  subname.Big5Dict={'Attention':AttentionBIS_SCORE,'Motor':MotorBIS_SCORE,'NonPlanning':NonPlanningBIS_SCORE,'Overall':OverallBIS_SCORE}
+
+def getBIG5(subname):
+
+  """
+  https://openpsychometrics.org/printable/big-five-personality-test.pdf
+  gives back a dictionary with Big5 scores 
+  subname should be a subject object eg. subs['sub1']
+  """
+  subname.Big5=subname.df[['BIG5slider.response','BIG5slider.rt','items']].dropna().reset_index(drop=True)#get rows w/big5 responses, items is questions
+  Big5Idx=list(np.arange(1,51))#establish a 1+index
+  missingFlag=False#flag for missing questions
+  if len(subname.Big5)!=50:#means something is missing
+    missingFlag=True#raise flag
+    print('has ' +str(50-(len(subname.Big5)))+' missing questions')
+    #figure out what is missing
+    #list of questions for reference
+    Big5Questions=['Am the life of the party.',
+      'Feel little concern for others.',
+      'Am always prepared.',
+      'Get stressed out easily.',
+      'Have a rich vocabulary.',
+      "Don't talk a lot.",
+      'Am interested in people.',
+      'Leave my belongings around.',
+      'Am relaxed most of the time.',
+      'Have difficulty understanding abstract ideas.',
+      'Feel comfortable around people.',
+      'Insult people.',
+      'Pay attention to details.',
+      'Worry about things.',
+      'Have a vivid imagination.',
+      ' Keep in the background.',
+      "Sympathize with other's feelings.",
+      'Make a mess of things.',
+      'Seldom feel blue.',
+      'Am not interested in abstract ideas.',
+      'Start conversations.',
+      "Am not interested in other people's problems.",
+      'Get chores done right away.',
+      'Am easily disturbed.',
+      'Have excellent ideas.',
+      'Have little to say.',
+      'Have a soft heart.',
+      'Often forget to put things back in their proper place.',
+      'Get upset easily.',
+      'Do not have a good imagination.',
+      'Talk to a lot of different people at parties.',
+      'Am not really interested in others.',
+      'Like order.',
+      'Change my mood a lot.',
+      'Am quick to understand things.',
+      "Don't like to draw attention to myself.",
+      'Take time out for others.',
+      'Shirk(Avoid) my duties.',
+      'Have frequent mood swings.',
+      'Use difficult words.',
+      "Don't mind being the center of attention.",
+      "Feel other's emotions.",
+      'Follow a schedule.',
+      'Get irritated easily.',
+      'Spend time reflecting on things.',
+      'Am quiet around strangers.',
+      'Make people feel at ease.',
+      'Am exacting in my work.',
+      'Often feel blue.',
+      'Am full of ideas.']
+
+    missing=list(set(Big5Questions)-set(subname.Big5['items']))#what is not in our subject
+    missingIDX=[]
+    for i in missing:
+      """
+      go through and see the original index of each of the missing questions
+      """
+      missingIDX.append(Big5Questions.index(i))#this index is 0 onwards!
+    
+    missingIDX=[i+1 for i in missingIDX]#start index from 1
+    print(missingIDX)
+  
+  #make certain scores negative (per BIG5 scoring guide)
+  minus=[2,4,6,8,10,12,14,16,18,20,22,24,26,28,29,30,32,34,36,38,39,44,46,49]
+  
+  #indices for Extroversion, Agreeableness.. etc
+  E_Idx=[1, 6, 11, 16, 21, 26, 31, 36, 41, 46]
+  A_Idx=[2, 7, 12, 17, 22, 27, 32, 37, 42, 47]
+  C_Idx=[3, 8, 13, 18, 23, 28, 33, 38, 43, 48]
+  N_Idx=[4, 9, 14, 19, 24, 29, 34, 39, 44, 49]
+  O_Idx=[5, 10, 15, 20, 30, 35, 40, 45, 50]
+
+  def removeItem(item,lst):
+    #if item in list, remove
+    if item in lst:
+      lst.remove(item)
+  
+  if missingFlag:
+    """
+    if missing questions, then need to remove from
+    the trait indices, as well as overall index
+    """
+    [removeItem(i,E_Idx) for i in missingIDX]
+    [removeItem(i,A_Idx) for i in missingIDX]
+    [removeItem(i,C_Idx) for i in missingIDX]
+    [removeItem(i,N_Idx) for i in missingIDX]
+    [removeItem(i,O_Idx) for i in missingIDX]
+    [removeItem(i,minus) for i in missingIDX]
+    [removeItem(i,Big5Idx) for i in missingIDX]
+  
+  #need to reindex with those missing taken out
+  subname.Big5.index=Big5Idx
+  
+  #make certain scores negative
+  subname.Big5.loc[minus,'BIG5slider.response']=subname.Big5.loc[minus,'BIG5slider.response']*-1
+  
+  #get the response values for each trait
+  E_Vals=[subname.Big5.loc[i]['BIG5slider.response'] for i in E_Idx]
+  A_Vals=[subname.Big5.loc[i]['BIG5slider.response'] for i in A_Idx]
+  C_Vals=[subname.Big5.loc[i]['BIG5slider.response'] for i in C_Idx]
+  N_Vals=[subname.Big5.loc[i]['BIG5slider.response'] for i in N_Idx]
+  O_Vals=[subname.Big5.loc[i]['BIG5slider.response'] for i in O_Idx]
+  
+  #sum the scores, the integers in front represent a scoring convention
+  EScore=20+np.sum(E_Vals)
+  AScore=14+np.sum(A_Vals)
+  CScore=14+np.sum(C_Vals)
+  NScore=38+np.sum(N_Vals)
+  OScore=8+np.sum(O_Vals)
+  
+  #return a dictionary which becomes an attribute of the subjecct
+  subname.Big5Dict={'Extroversion':EScore,'Agreeableness':AScore,'Conscientiosness':CScore,'Neuroticism':NScore,'Openess':OScore}
+
