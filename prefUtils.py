@@ -654,7 +654,7 @@ def getBIG5(subname):
       'Pay attention to details.',
       'Worry about things.',
       'Have a vivid imagination.',
-      ' Keep in the background.',
+      'Keep in the background.',
       "Sympathize with other's feelings.",
       'Make a mess of things.',
       'Seldom feel blue.',
