@@ -622,7 +622,7 @@ def getBIS(subname):
   NonPlanningBIS_SCORE=NonPlanningNormScore+NonPlanningRevScore
   OverallBIS_SCORE=AttentionBIS_SCORE+MotorBIS_SCORE+NonPlanningBIS_SCORE
   #BIS dictionary
-  subname.Big5Dict={'Attention':AttentionBIS_SCORE,'Motor':MotorBIS_SCORE,'NonPlanning':NonPlanningBIS_SCORE,'Overall':OverallBIS_SCORE}
+  subname.BISDict={'Attention':AttentionBIS_SCORE,'Motor':MotorBIS_SCORE,'NonPlanning':NonPlanningBIS_SCORE,'Overall':OverallBIS_SCORE}
 
 def getBIG5(subname):
 
