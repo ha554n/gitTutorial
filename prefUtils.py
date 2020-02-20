@@ -750,5 +750,5 @@ def getBIG5(subname):
   OScore=8+np.sum(O_Vals)
   
   #return a dictionary which becomes an attribute of the subjecct
-  subname.Big5Dict={'Extroversion':EScore,'Agreeableness':AScore,'Conscientiosness':CScore,'Neuroticism':NScore,'Openess':OScore}
+  subname.Big5Dict={'Extroversion':EScore,'Agreeableness':AScore,'Conscientiousness':CScore,'Neuroticism':NScore,'Openness':OScore}
 
